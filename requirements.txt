@@ -1,4 +1,3 @@
 pip install --upgrade pip
 pip install -U discord.py
-apt install libffi-dev libnacl-dev python3-dev
 pip install python-dotenv

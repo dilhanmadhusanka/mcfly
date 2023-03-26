@@ -1,4 +1,2 @@
-sudo apt-get install python3-pip python-dev -y
-pip --version
-python3 pip install discord
-python3 pip install python-dotenv
+Discord.py
+python-dotenv

@@ -11,7 +11,6 @@ from dotenv import load_dotenv
 from discord.ext import commands
 
 from table2ascii import table2ascii as t2a, PresetStyle
-from prettytable import PrettyTable
 # Loads the.env file that resides on the same level as the script.
 load_dotenv()
 
@@ -130,9 +129,6 @@ async def stat(ctx):
     # await ctx.send(text+output)
     result = filter(lambda player: player.ops != 0 or player.events != 0 or player.certs != 0 or player.spl_certs != 0, result)
 
-    table = PrettyTable()
-    table.align = "r"
-    table.field_names = ["Name", "Ops", "Events", "Std. Cert.", "Adv. Cert."]
     tbody = []
     i=1
     await ctx.send("**Player Status**\n\n")

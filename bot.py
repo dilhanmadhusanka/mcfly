@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 # Import commands from the discord.ext module.
 from discord.ext import commands
 
+from table2ascii import table2ascii as t2a, PresetStyle
 # Loads the .env file that resides on the same level as the script.
 load_dotenv()
 
@@ -111,15 +112,23 @@ async def stat(ctx):
                     result[i] = player
                 i += 1
 
-    embed=discord.Embed(title="Player Status", color=0x00ff11)
+    # embed=discord.Embed(title="Player Status", color=0x00ff11)
+    # for x in result:
+    #     embed.add_field(name="Name", value=x.name+"\u2800\u2800\u2800", inline=True)
+    #     embed.add_field(name="Ops", value=str(x.ops)+"\u2800\u2800\u2800", inline=True)
+    #     embed.add_field(name="Events", value=str(x.events)+"\u2800\u2800\u2800", inline=True)
+    #     embed.add_field(name="Std. Cert", value=str(x.certs)+"\u2800\u2800\u2800", inline=True)
+    #     embed.add_field(name="Adv. Cert.", value=str(x.spl_certs)+"\u2800\u2800\u2800", inline=True)
+    #    # text += x.name+"   OPS:"+str(x.ops)+"   EVENTS:"+str(x.events)+"\n"
+    # await ctx.send(embed=embed)
+    tbody = []
     for x in result:
-        embed.add_field(name="Name", value=x.name+"\u2800\u2800\u2800", inline=True)
-        embed.add_field(name="Ops", value=str(x.ops)+"\u2800\u2800\u2800", inline=True)
-        embed.add_field(name="Events", value=str(x.events)+"\u2800\u2800\u2800", inline=True)
-        embed.add_field(name="Std. Cert", value=str(x.certs)+"\u2800\u2800\u2800", inline=True)
-        embed.add_field(name="Adv. Cert.", value=str(x.spl_certs)+"\u2800\u2800\u2800", inline=True)
-        # text += x.name+"   OPS:"+str(x.ops)+"   EVENTS:"+str(x.events)+"\n"
-    await ctx.send(embed=embed)
-    
+        tbody.append([x.name,str(x.ops),str(x.events),str(x.certs),str(x.spl_certs)])
+    output = t2a(
+        header=["Name", "Ops", "Events", "Std. Cert.", "Adv. Cert."],
+        body=tbody,
+        first_col_heading=True
+    )
+    await ctx.send(f"```\n{output}\n```")
 # Executes the bot with the specified token. Token has been removed and used just as an example.
 bot.run(DISCORD_TOKEN)

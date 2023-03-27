@@ -1,2 +1,3 @@
 Discord.py
 python-dotenv
+table2ascii

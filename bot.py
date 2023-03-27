@@ -18,6 +18,8 @@ DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 OP_CH = os.getenv("OP_CH")
 EV_CH = os.getenv("EV_CH")
 ROLE_NAME = os.getenv("ROLE_NAME")
+ROLES = os.getenv("ROLES")
+SPC_ROLES = os.getenv("SPC_ROLES")
 
 # Creates a new Bot object with a specified prefix. It can be whatever you want it to be.
 intents = discord.Intents.all()
@@ -68,40 +70,56 @@ async def get_members(ctx,role_name):
 async def stat(ctx):
     result = []
     opchannel = discord.utils.get(ctx.guild.channels, name=OP_CH)
-    # eventchannel = discord.utils.get(ctx.guild.channels, name=EV_CH)
+    eventchannel = discord.utils.get(ctx.guild.channels, name=EV_CH)
+    members = opchannel.members
+    for member in members:
+        cert_count = spc_cert_count = 0
+        if ROLE_NAME in [y.name for y in member.roles]:
+            for role in ROLES:
+                if role in [y.name for y in member.roles]:
+                    cert_count += 1
+            for sp_role in SPC_ROLES:
+                if sp_role in [y.name for y in member.roles]:
+                    spc_cert_count += 1
+            player = Player(member.name,0,0,cert_count,spc_cert_count)
+            result.append(player)
+            
     if opchannel:
-        members = opchannel.members
-        text = ""
-        async for message in opchannel.history(limit=200):
-            for member in members:
-                if ROLE_NAME in [y.name for y in member.roles]:
-                    ops = events = exists = 0
-                    for line in message.content.splitlines():
-                        if line.startswith(":yes:"):
-                            if ':yes: '+member.name in line:
-                                ops += 1
-                    if ops>0 or events>0:
-                        for i in range(len(result)):
-                            if result[i].name == member.name:
-                                player = result[i]
-                                player.ops += ops
-                                player.events += events
-                                result[i] = player
-                                exists = 1
-                        if exists == 0:
-                            player = Player(member.name,ops,events)
-                            result.append(player)
+        async for message in opchannel.history():
+            i = 0
+            for player in result:
+                ops = events = 0
+                for line in message.content.splitlines():
+                    if line.startswith(":yes:"):
+                        if ':yes: '+player.name in line:
+                            ops += 1
+                if ops>0:
+                    player.ops += ops
+                    result[i] = player
+                i += 1
+    if eventchannel:
+        async for message in eventchannel.history():
+            i = 0
+            for player in result:
+                ops = events = 0
+                for line in message.content.splitlines():
+                    if line.startswith(":yes:"):
+                        if ':yes: '+player.name in line:
+                            events += 1
+                if events>0:
+                    player.events += events
+                    result[i] = player
+                i += 1
 
-        embed=discord.Embed(title="Player Status", color=0x00ff11)
-        
-        for x in result:
-            embed.add_field(name="Name", value=x.name+"\u2800\u2800\u2800\u2800\u2800", inline=True)
-            embed.add_field(name="Ops", value=str(x.ops)+"\u2800\u2800\u2800\u2800\u2800", inline=True)
-            embed.add_field(name="Events", value=str(x.events)+"\u2800\u2800\u2800\u2800\u2800", inline=True)
-            # text += x.name+"   OPS:"+str(x.ops)+"   EVENTS:"+str(x.events)+"\n"
-        await ctx.send(embed=embed)
-    else:
-        await ctx.send("Channels not found.")
-
+    embed=discord.Embed(title="Player Status", color=0x00ff11)
+    for x in result:
+        embed.add_field(name="Name", value=x.name+"\u2800\u2800\u2800", inline=True)
+        embed.add_field(name="Ops", value=str(x.ops)+"\u2800\u2800\u2800", inline=True)
+        embed.add_field(name="Events", value=str(x.events)+"\u2800\u2800\u2800", inline=True)
+        embed.add_field(name="Std. Cert", value=str(x.certs)+"\u2800\u2800\u2800", inline=True)
+        embed.add_field(name="Adv. Cert.", value=str(x.spl_certs)+"\u2800\u2800\u2800", inline=True)
+        # text += x.name+"   OPS:"+str(x.ops)+"   EVENTS:"+str(x.events)+"\n"
+    await ctx.send(embed=embed)
+    
 # Executes the bot with the specified token. Token has been removed and used just as an example.
 bot.run(DISCORD_TOKEN)

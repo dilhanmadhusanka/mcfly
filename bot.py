@@ -1,26 +1,26 @@
-# Import discord.py. Allows access to Discord's API.
+# Import discord.py allows access to Discord's API.
 import discord
 
-# Import the os module.
+# Import the OS module.
 import os
 
-# Import load_dotenv function from dotenv module.
+# Import the load_dotenv function from the dotenv module.
 from dotenv import load_dotenv
 
 # Import commands from the discord.ext module.
 from discord.ext import commands
 
 from table2ascii import table2ascii as t2a, PresetStyle
-# Loads the .env file that resides on the same level as the script.
+# Loads the.env file that resides on the same level as the script.
 load_dotenv()
 
-# Grab the API token from the .env file.
+# Grab the API token from the.env file.
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 OP_CH = os.getenv("OP_CH")
 EV_CH = os.getenv("EV_CH")
 ROLE_NAME = os.getenv("ROLE_NAME")
-ROLES = os.getenv("ROLES")
-SPC_ROLES = os.getenv("SPC_ROLES")
+ROLES = ["Infantry 🎖️","Airborne 🦅","Breacher 🚪","Explosives 💣","Heavy Weapons 💥","Marksman 🎯","Mechanized 🛡️","Medic 💉"]
+SPC_ROLES=["JTAC 📡","Rotary Pilot 🚁","Fixed-Wing Pilot ✈️","UAV Operator 🛩️"]
 
 # Creates a new Bot object with a specified prefix. It can be whatever you want it to be.
 intents = discord.Intents.all()
@@ -34,7 +34,7 @@ channelId = 1089251564465704982
 bot = commands.Bot(command_prefix='!',intents=intents)
 
 class Player:
-  def __init__(self, name, ops=0, events=0, certs=0, spl_certs=0):
+  def __init__ (self, name, ops = 0, events = 0, certs = 0, spl_certs=0):
     self.name = name
     self.ops = ops
     self.events = events

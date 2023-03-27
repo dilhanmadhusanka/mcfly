@@ -45,12 +45,11 @@ class Player:
 async def on_ready():
     print("online")
 
-
 @bot.command(name="ping")
 async def ping(ctx):
     await ctx.send("pong")
 
-@bot.command(name="get_members")
+@bot.command(name="members")
 async def get_members(ctx,role_name):
     result = []
     role = discord.utils.find(
@@ -67,7 +66,7 @@ async def get_members(ctx,role_name):
 
     await ctx.send(embed=embed)
     
-@bot.command(name="stat")
+@bot.command(name="stats")
 async def stat(ctx):
     result = []
     opchannel = discord.utils.get(ctx.guild.channels, name=OP_CH)
@@ -130,5 +129,10 @@ async def stat(ctx):
         first_col_heading=True
     )
     await ctx.send(f"```\n{output}\n```")
+
+@bot.command()
+async def default(ctx):
+    await ctx.send(":fu:")
+
 # Executes the bot with the specified token. Token has been removed and used just as an example.
 bot.run(DISCORD_TOKEN)
